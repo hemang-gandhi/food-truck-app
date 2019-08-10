@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/ecmascript" src="js/jquery-1.11.0.min.js"></script>
+    <script type="text/ecmascript" src="js/i18n/grid.locale-en.js"></script>
+    <script type="text/ecmascript" src="js/jquery.jqGrid.min.js"></script>
+    <script type="text/ecmascript" src="jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="jquery-ui-1.12.1/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css"/>
+    <meta charset="utf-8"/>
+    <title>Food Truck Panel</title>
+</head>
+<body>
+<h2>Get food truck information by location</h2>
+<h3>Example locations to test:</h3>
+<ul>
+    <li>TOWNSEND ST: LUSK ST to 04TH ST (252 - 299)</li>
+    <li>MONTGOMERY ST: POST ST to SUTTER ST (1 - 99)</li>
+    <li>02ND ST: BRYANT ST to TABER PL (500 - 518)</li>
+    <li>INDIANA ST: 26TH ST to CESAR CHAVEZ ST (1500 - 1599)</li>
+</ul>
+Location:<br><br>
+<input type="text" style="width: 500px;" id="locationDescription"
+       name="locationDescription" value="MARIN ST: KANSAS ST to HWY 101 N ON RAMP (2500 - 2599)"><br><br>
+<input type="button" value="Search" id="search"><br><br>
+
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#jqGrid").jqGrid({
+                    url: '/food-truck',
+                    postData:{locationDescription: function(){ return $('#locationDescription').val()}},
+                    mtype: "GET",
+                    datatype: "json",
+                    ajaxGridOptions: { contentType: "application/json" },
+                    jsonReader: { repeatitems: false, id: "ObjectID", root: function(obj) { return obj; }},
+                    colNames: ['ObjectID', 'Facility Type', 'Location Description','Food Items'],
+                    colModel: [
+                        { name: 'objectId', width: 50},
+                        { name: 'facilityType', width: 50, align: 'left' },
+                        { name: 'locationDescription', width: 250, align: 'left' },
+                        { name: 'foodItems', width: 250, align: 'left' }
+                    ],
+                    viewrecords: true,
+                    rownumbers: true,
+                    width: 1200,
+                    height: 250,
+                    rowNum: 20,
+                    pager: "#jqGridPager"
+                });
+
+            $('#search').on("click", function(){
+               $('#jqGrid').trigger( 'reloadGrid' );
+                return false;
+            })
+        });
+
+</script>
+</body>
+</html>
